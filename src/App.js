@@ -248,7 +248,7 @@ function App() {
           <div className={classes.grow} />
           <Tabs value={selectedTab} onChange={handleTabChange} variant="scrollable" scrollButtons="auto">
             <Tab label="Home" />
-            <Tab label="Predict" />
+            <Tab label="Literature Review" />
             <Tab label="MindMap" />
             <Tab label="Whiteboard" />
 
