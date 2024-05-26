@@ -155,6 +155,7 @@ function App() {
   const [extractedText, setExtractedText] = useState("");
   const [translatedText, setTranslatedText] = useState("");
   const [selectedTab, setSelectedTab] = React.useState(0);
+  const [audioSrc, setAudioSrc] = useState(null);
 
 
 
@@ -234,6 +235,40 @@ function App() {
 
   }
 
+  const handleListen = async () => {
+    try {
+      console.log("handleListen function accessed")
+      const jsonObject = { text: pdfFile };
+      const jsonString = JSON.stringify(jsonObject);
+      const response = await fetch('http://localhost:5000/make_audio/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: jsonString
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      // Ensure response is handled as a blob
+      const blob = await response.blob();
+      const url = URL.createObjectURL(blob);
+      setAudioSrc(url);
+    } catch (error) {
+      console.error('Error fetching audio:', error);
+    }
+
+  };
+
+
+
+
+
+
+
+
   const handleTabChange = (event, newValue) => {
     setSelectedTab(newValue);
   };
@@ -299,9 +334,15 @@ function App() {
         <Button variant="contained" color="primary" style={{ marginRight: "5px" }} onClick={() => handleTextSelect()}>
           Select word
         </Button>
-        <Button variant="contained" color="primary" onClick={() => handleTranslate()}>
+        <Button variant="contained" color="primary" style={{ marginRight: "5px" }} onClick={() => handleTranslate()}>
           Translate
         </Button>
+        <Button variant="contained" color="primary" style={{ marginRight: "5px" }} onClick={() => handleListen()}>
+          Listen
+        </Button>
+        <div>
+          {audioSrc && <audio controls src={audioSrc}></audio>}
+        </div>
         <Typography variant="h6">Translation</Typography>
 
         <Typography variant="h6">{translatedText}</Typography>
